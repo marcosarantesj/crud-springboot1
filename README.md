@@ -47,6 +47,19 @@ O objetivo principal foi demonstrar a integração entre a camada de apresentaç
 
 ---
 
+### ⚙️ Configuração do Banco de Dados
+
+A aplicação utiliza o **PostgreSQL** como banco de dados. A configuração de conexão está no arquivo `src/main/resources/application.properties`.
+
+O Spring Data JPA, através da propriedade `spring.jpa.hibernate.ddl-auto=update`, se encarrega de criar e atualizar a tabela `usuario` no banco de dados automaticamente, com base na sua entidade `Usuario.java`.
+
+Para conectar ao seu próprio banco de dados, basta alterar as seguintes linhas no arquivo de propriedades:
+
+```properties
+spring.datasource.url=jdbc:postgresql://localhost:5432/nome-do-seu-banco
+spring.datasource.username=seu_usuario
+spring.datasource.password=sua_senha
+
 ### 🛠️ Como Executar o Projeto
 
 1.  **Pré-requisitos:**
@@ -56,7 +69,7 @@ O objetivo principal foi demonstrar a integração entre a camada de apresentaç
 
 2.  **Clone o repositório:**
     ```bash
-    git clone [https://github.com/seu-usuario/seu-repositorio.git](https://github.com/seu-usuario/seu-repositorio.git)
+    git clone https://github.com/marcosarantesj/crud-springboot1.git
     ```
 
 3.  **Abra o projeto na sua IDE:**
