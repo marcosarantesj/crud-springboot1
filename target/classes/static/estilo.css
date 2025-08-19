@@ -1,0 +1,14 @@
+* {
+padding:0;
+margin:0;
+vertical-align:baseline;
+list-style:none;
+border:0
+}
+html{
+	margin: 20px;
+}
+.tabela{
+	height: 300px;
+	overflow: scroll;
+}

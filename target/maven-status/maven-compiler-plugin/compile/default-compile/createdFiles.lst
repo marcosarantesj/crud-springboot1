@@ -1,0 +1,4 @@
+br\com\springboot\crud_spring_boot\repository\UsuarioRepository.class
+br\com\springboot\crud_spring_boot\model\Usuario.class
+br\com\springboot\crud_spring_boot\Application.class
+br\com\springboot\crud_spring_boot\controllers\UsuarioController.class

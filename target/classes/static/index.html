@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Spring BOOT Rest API</title>
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+	rel="stylesheet"
+	integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr"
+	crossorigin="anonymous">
+<link rel="stylesheet" type="text/css" href="estilo.css">
+</head>
+<body>
+	<h2>Spring BOOT Rest API</h2>
+	<form action="" id="formCadastro">
+		<div class="mb-3">
+			<label for="id" class="form-label">ID </label> <input type="text"
+				class="form-control bg-light" id="id" readonly="readonly">
+		</div>
+		<div class="mb-3">
+			<label for="nome" class="form-label">Nome</label> <input type="text"
+				class="form-control" id="nome" placeholder="Digite o nome"
+				required="required">
+		</div>
+		<div class="mb-3">
+			<label for="idade" class="form-label">Idade</label> <input
+				type="number" class="form-control" id="idade"
+				placeholder="Digite a idade">
+		</div>
+	</form>
+	<button type="button" class="btn btn-primary" onclick="salvarUsuario()">Salvar</button>
+	<button type="button" class="btn btn-success" onclick="limparTela();">Novo</button>
+	<button type="button" class="btn btn-secondary" data-bs-toggle="modal"
+		data-bs-target="#pesquisaModal">Pesquisar</button>
+	<button type="button" class="btn btn-danger" onclick="deletarTela();">Deletar</button>
+
+
+	<div class="modal fade" id="pesquisaModal" tabindex="-1"
+		aria-labelledby="modalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h1 class="modal-title fs-5" id="modalLabel">Pesquisa Usuário</h1>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"
+						aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<form>
+						<div class="mb-3">
+							<label for="nome-pesquisa" class="col-form-label">Digite
+								o nome:</label> <input type="text" class="form-control"
+								id="nome-pesquisa">
+						</div>
+						<button type="button" class="btn btn-success"
+							onclick="pesquisaUsuario();">Pesquisar</button>
+							<button type="button" class="btn btn-info"
+							onclick="listaTodos();">Listar Todos</button>
+					</form>
+					<div class="tabela">
+						<table class="table table-striped table-hover" id="tblPesquisa">
+							<thead>
+								<tr>
+									<th scope="col">ID</th>
+									<th scope="col">Nome</th>
+									<th scope="col">Idade</th>
+									<th scope="col">Editar</th>
+								</tr>
+							</thead>
+							<tbody>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-danger"
+						data-bs-dismiss="modal">Fechar</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script src="https://code.jquery.com/jquery-3.7.1.min.js"
+		integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+		crossorigin="anonymous"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
+		crossorigin="anonymous"></script>
+
+	<script type="text/javascript">
+		function limparTela() {
+			$('#formCadastro').trigger('reset');
+			$('#nome').focus();
+		}
+
+		function salvarUsuario() {
+			var id = $("#id").val();
+			var nome = $("#nome").val();
+			var idade = $("#idade").val();
+
+			if (nome == null || nome != null && nome.trim() == '') {
+				alert('Informe o nome do usuário!');
+				$('#nome').focus();
+				return
+			}if (idade == null || idade != null && idade.trim() == '') {
+				alert('Informe a idade!');
+				$('#idade').focus();
+				return;
+			}
+				var request = $.ajax({
+					url : "salvar",
+					method : "POST",
+					data : JSON.stringify({
+						id : id,
+						nome : nome,
+						idade : idade
+					}),
+					contentType : "application/json; charset=utf-8",
+					success : function(response) {
+
+						alert("Salvo com sucesso!");
+						$("#id").val(response.id);
+					}
+				});
+
+				request.fail(function(jqXHR, textStatus) {
+					alert("Erro na requisição: " + textStatus);
+				});
+			}		
+		
+
+		function pesquisaUsuario() {
+			var nome = $("#nome-pesquisa").val();
+
+			if (nome != null && nome.trim() != '') {
+
+				var request = $
+						.ajax({
+							url : "buscarPorNome",
+							method : "GET",
+							data : "name=" + nome,
+							success : function(response) {
+								$('#tblPesquisa > tbody > tr').remove();
+
+								for (var i = 0; i < response.length; i++) {
+									$('#tblPesquisa > tbody')
+											.append(
+													'<tr id="'
+															+ response[i].id
+															+ '"><td>'
+															+ response[i].id
+															+ '</td><td>'
+															+ response[i].nome
+															+ '</td><td>'
+															+ response[i].idade
+															+ '</td><td><button type="button" class="btn btn-primary" onclick="editarRegistro('
+															+ response[i].id
+															+ ')">Editar</button></td><td><button type="button" class="btn btn-danger" onclick="deletarRegistro('
+															+ response[i].id
+															+ ')">Deletar</button></td></tr>')
+								}
+
+							}
+						});
+
+				request.fail(function(jqXHR, textStatus) {
+					alert("Erro ao buscar: " + textStatus);
+				});
+
+			}
+		}
+		
+		function listaTodos() {	
+
+							var request = $
+						.ajax({
+							url : "listatodos",
+							method : "GET",
+							//data : "name=" + nome,
+							success : function(response) {
+								$('#tblPesquisa > tbody > tr').remove();
+
+								for (var i = 0; i < response.length; i++) {
+									$('#tblPesquisa > tbody')
+											.append(
+													'<tr id="'
+															+ response[i].id
+															+ '"><td>'
+															+ response[i].id
+															+ '</td><td>'
+															+ response[i].nome
+															+ '</td><td>'
+															+ response[i].idade
+															+ '</td><td><button type="button" class="btn btn-primary" onclick="editarRegistro('
+															+ response[i].id
+															+ ')">Editar</button></td><td><button type="button" class="btn btn-danger" onclick="deletarRegistro('
+															+ response[i].id
+															+ ')">Deletar</button></td></tr>')
+								}
+
+							}
+						});
+
+				request.fail(function(jqXHR, textStatus) {
+					alert("Erro ao buscar: " + textStatus);
+				});
+
+			
+		}
+
+		function editarRegistro(id) {
+			var request = $.ajax({
+				url : "buscarUserId",
+				method : "GET",
+				data : "idUser=" + id,
+				success : function(response) {
+					$("#id").val(response.id);
+					$("#nome").val(response.nome);
+					$("#idade").val(response.idade);
+
+					$("#pesquisaModal").modal('hide');
+				}
+
+			});
+
+			request.fail(function(jqXHR, textStatus) {
+				alert("Erro ao buscar usuário por ID: " + textStatus);
+			});
+		}
+
+		function deletarRegistro(id) {
+
+			if (confirm('Deseja realmente deletar o registro?')) {
+
+				var request = $.ajax({
+					url : "delete",
+					method : "DELETE",
+					data : "idUser=" + id,
+					success : function(response) {
+						$('#' + id).remove();
+						alert(response);
+					}
+
+				});
+
+				request.fail(function(jqXHR, textStatus) {
+					alert("Erro ao deletar usuário: " + textStatus);
+				});
+			}
+		}
+
+		function deletarTela() {
+			var id = $('#id').val();
+			if (id != null && id != '') {
+				deletarRegistro(id);
+				$('#formCadastro').trigger('reset');
+			}
+		}
+	</script>
+
+</body>
+</html>
