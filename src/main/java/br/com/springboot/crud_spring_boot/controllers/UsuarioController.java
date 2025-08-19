@@ -24,21 +24,8 @@ public class UsuarioController {
 
 	private final UsuarioRepository usuarioRepository;
 
-	// Apenas a injeção via construtor
 	public UsuarioController(UsuarioRepository usuarioRepository) {
 		this.usuarioRepository = usuarioRepository;
-	}
-
-	@RequestMapping(value = "/nome/{name}", method = RequestMethod.GET)
-	@ResponseStatus(HttpStatus.OK)
-	public String greetingText(@PathVariable String name) {
-		return "CRUD Spring Boot API " + name + "!";
-	}
-
-	@RequestMapping(value = "/olamundo/{nome}", method = RequestMethod.GET)
-	@ResponseStatus(HttpStatus.OK)
-	public String retornaOlaMundo(@PathVariable String nome) {
-		return "Olá mundo " + nome;
 	}
 
 	@GetMapping(value = "listatodos")
@@ -89,10 +76,10 @@ public class UsuarioController {
 		return new ResponseEntity<Usuario>(user, HttpStatus.OK);
 
 	}
-	
+
 	@GetMapping(value = "buscarPorNome")
 	@ResponseBody
-	public ResponseEntity<List<Usuario>> buscarPorNome(@RequestParam(name = "name")String name) {
+	public ResponseEntity<List<Usuario>> buscarPorNome(@RequestParam(name = "name") String name) {
 
 		List<Usuario> usuario = usuarioRepository.buscarPorNome(name.trim().toUpperCase());
 		return new ResponseEntity<List<Usuario>>(usuario, HttpStatus.OK);
